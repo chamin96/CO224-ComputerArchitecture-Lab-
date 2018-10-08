@@ -26,9 +26,10 @@ main:
 	@ ---------------------
 
 	ldr r5,[r0,#0];
-	sub r5,r5,r1;
+	sub r5,r5,#7;
 	ldr r6,[r0,#4];
 	add r5,r5,r6;
+	add r5,r5,#2;
 	str r5,[r0,#8];
 	
 
