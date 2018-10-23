@@ -1,6 +1,7 @@
-@ ARM Assembly: Lab 1 - exercise 3 template
+@ ARM Assembly - exercise 3 
 @ 
-
+@ Roshan Ragel - roshanr@pdn.ac.lk
+@ Hasindu Gamaarachchi - hasindu@ce.pdn.ac.lk
 
 	.text 	@ instruction memory
 	.global main
@@ -11,45 +12,32 @@ main:
 	str lr, [sp, #0]
 
 	@ load values
-	ldr r0, =array_a
-	ldr r1, =array_b
-	mov r2, #3
-	mov r3, #7
-	mov r4, #10
+	mov r0, #10
+	mov r1, #5
+	mov r2, #7
+	mov r3, #-8
 
 	
 	@ Write YOUR CODE HERE
-	@ b[4] = 6 + a[9] - a[3] + b[1] – ( c + d - e )
-	@ Base address of a in r0
-	@ Base address of b in r1
-	@ c,d,e in r2,r3,r4 respectively 
+	@ a,b,i,j in r0,r1,r2,r3 respectively
+	@	if (i>=j) f = a+b;
+	@	else f = a-b;
+	@ Use signed comparison
+	@ Put f to r5
 
 	@ ---------------------
-
- 	ldr r5,[r0,#36];
-	add r5,r5,#6;
+	 
+	CMP r2, r3
+	ADDGE r4, r0, r1
+	SUBLT r4, r0, r1
+	MOV r5, r4
 	
-	ldr r6,[r0,#12];
-	sub r5,r5,r6;
-	
-	ldr r6,[r1,#4];
-	add r5,r5,r6;
-
-	add r6,r2,r3;
-	sub r6,r6,r4;
-	
-	sub r5,r5,r6;
-
-	str r5,[r1,#16];
- 
-
 	@ ---------------------
 	
 	
 	@ load aguments and print
 	ldr r0, =format
-	ldr r2, =array_b
-	ldr r1, [r2,#16]
+	mov r1, r5
 	bl printf
 
 	@ stack handling (pop lr from the stack) and return
@@ -57,16 +45,6 @@ main:
 	add sp, sp, #4
 	mov pc, lr
 
-	
-	
 	.data	@ data memory
-	
-format: .asciz "The Answer is %d (Expect -3 if correct)\n"
-	
-	@array called array_a of size 40 bytes
-	.balign 4 			@align to an address of multiple of 4
-array_a: .word 1,5,7,67,5,54,65,23,34,54
+format: .asciz "The Answer is %d (Expect 15 if correct)\n"
 
-	@array called array_b of size 20 bytes
-	.balign 4 			@align to an address of multiple of 4
-array_b: .word 7,4,8,3,5
