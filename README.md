@@ -14,3 +14,9 @@ Computer Architecture Lab Sessions
 
 #EMULATOR
 *On Linux sudo apt-get install qemu-user
+
+#Assembling and Running
+##Assemble
+  arm-linux-gnueabi-gcc -Wall example.s -o example
+##Run
+  qemu-arm -L /usr/arm-linux-gnueabi example
