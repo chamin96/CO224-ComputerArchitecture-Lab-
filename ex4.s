@@ -1,49 +1,60 @@
 @ ARM Assembly - exercise 4
 
 	.text 	@ instruction memory
-	.global main
+	
+	
+@ Write YOUR CODE HERE	
+
+@ ---------------------	
+fact:
+	sub sp,sp,#8	@stack handling
+	str lr,[sp,#0]	@to store return address
+	str r6,[sp,#4]	@to keep local variable
+
+	@base case
+	cmp r0,#1
+		beq factBase @if arg==1, then go to factBase
+	
+	mov r6,r0		@copy arg to local variable
+	sub r0,r0,#1	@arg=arg-1
+	
+	bl fact			@recursion
+
+	mul r0,r6,r0	@return=fact(arg)*fact(arg-1)
+	
+	
+
+factBase:
+	ldr lr,[sp,#0]	@load return address
+	ldr r6,[sp,#4]	@load local variable
+	add sp,sp,#8	@free memory
+	mov pc,lr		
+
+
+
+
+
+@ ---------------------	
+
+.global main
 main:
 	@ stack handling, will discuss later
 	@ push (store) lr to the stack
 	sub sp, sp, #4
 	str lr, [sp, #0]
 
-	@ load values
-	mov r0, #3 @This is i
-	mov r1, #5
+	mov r4, #8 	@the value n
+
+	@ calling the fact function
+	mov r0, r4 	@the arg1 load
+	bl fact
+	mov r5,r0
 	
-	@ Write YOUR CODE HERE
-	@ if (i==5) f = 70;
-	@ else if (i!=3) f=55;
-	@ else f = 30;
-	@ i  in r0
-	@ Put f to r5
-	@ Hint : Use MOV instruction
-	@ MOV r5,#70 makes r5=70
 
-	@ ---------------------
-	cmp r0,#5
-	bgt gt1
-
-	cmp r0,#3
-	bgt gt2
-
-	mov r5, #30
-        b printit @remove this line and see what happens (with i=3)
-
-gt1:	mov r5, #70
-	b   printit
-
-gt2: mov r5,#55
-	b   printit
-	
-	@ ---------------------
-	
-	
 	@ load aguments and print
-printit:
 	ldr r0, =format
-	mov r1, r5
+	mov r1, r4
+	mov r2, r5
 	bl printf
 
 	@ stack handling (pop lr from the stack) and return
@@ -52,5 +63,5 @@ printit:
 	mov pc, lr
 
 	.data	@ data memory
-format: .asciz "The Answer is %d\n"
+format: .asciz "Factorial of %d is %d\n"
 
