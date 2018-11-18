@@ -21,7 +21,7 @@ main:
 	str r4,[sp,#4]
 @--------------------	
     ldr r4,[sp,#4]      @load number
-
+    add sp,sp,#4        @free stack
     cmp r4,#0           @check for invalid numbers
     ble invalid
 
@@ -44,14 +44,15 @@ loop:                   @while counter<=number
     bl scanf
     mov r1,sp
 
-
+@---------------------------get string length
     mov r6,#0   @iterator=0
 strLength:    
-    add r2,r6,r1
-    ldrb r3,[r2,#0]
-    cmp r3,#0
+    add r2,r6,r1        @r2=str[i]
+    ldrb r3,[r2,#0]     @load str[i] to r3
+    cmp r3,#0           @compare for null char
+        @ beq str_Rev
         beq str_Rev
-    add r6,r6,#1
+    add r6,r6,#1        @i++
     b strLength
 
 str_Rev:
@@ -60,22 +61,20 @@ str_Rev:
     ldr r0, =formatd
     bl printf
 
-    mov r1,sp
-    sub r6,r6,#1
+@     mov r1,sp
+@     sub r6,r6,#1
 
-print_rev:
-    add r2,r6,r1
-    ldrb r3,[r2,#0]
-    cmp r3,#0
-        beq exit_rev
+@ print_rev:
+@     add r2,r6,r1
+@     ldrb r3,[r2,#0]
+@     cmp r3,#0
+@         beq exit_rev
 
 
-    mov r0,r3
-    ldr r0, =formats
-    bl printf
+     
     
-    sub r6,r6,#1
-    b print_rev
+@     sub r6,r6,#1
+@     b print_rev
 
 exit_rev:
     add sp,sp,#200      @free stack
