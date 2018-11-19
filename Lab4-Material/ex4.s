@@ -18,15 +18,14 @@ main:
     bl scanf
 
 	ldr r4,[sp,#0]		@load and save num
-	str r4,[sp,#4]
 @--------------------	
-    ldr r4,[sp,#4]      @load number
     add sp,sp,#4        @free stack
     cmp r4,#0           @check for invalid numbers
     ble invalid
 
     mov r5,#0           @counter starting from 0
     b loop
+
 loop:                   @while counter<=number
     cmp r5,r4
     beq exit
@@ -41,42 +40,42 @@ loop:                   @while counter<=number
 	sub sp,sp,#200 		@allocate stack for input
 	ldr r0, =formats	@scanf("%s")
 	mov r1,sp
-    bl scanf
-    mov r1,sp
+    	bl scanf
+    	mov r8,sp
 
 @---------------------------get string length
     mov r6,#0   @iterator=0
 strLength:    
-    add r2,r6,r1        @r2=str[i]
+    add r2,r6,r8        @r2=str[i]
     ldrb r3,[r2,#0]     @load str[i] to r3
     cmp r3,#0           @compare for null char
-        @ beq str_Rev
         beq str_Rev
+
     add r6,r6,#1        @i++
     b strLength
 
 str_Rev:
-    mov r1,r6
-    mov r0,r6
-    ldr r0, =formatd
+
+    mov r11,sp
+    sub r6,r6,#1
+
+print_rev:
+    add r2,r6,r11
+    ldrb r3,[r2,#0]
+    cmp r3,#0
+        beq exit_rev
+
+    mov r1,r3
+    ldr r0, =formatc
     bl printf
-
-@     mov r1,sp
-@     sub r6,r6,#1
-
-@ print_rev:
-@     add r2,r6,r1
-@     ldrb r3,[r2,#0]
-@     cmp r3,#0
-@         beq exit_rev
-
-
      
     
-@     sub r6,r6,#1
-@     b print_rev
+    sub r6,r6,#1
+    b print_rev
 
 exit_rev:
+    ldr r0, =newline
+    bl printf
     add sp,sp,#200      @free stack
 
     b loop
@@ -100,6 +99,6 @@ formatd: .asciz "%d"
 invalid_msg: .asciz "Invalid Number\n"
 second: .asciz "Enter the input string %d:\n"
 formats: .asciz "%s"
+formatc: .asciz "%c"
 printStr: .asciz "%s\n"
-
-
+newline: .asciz "\n"
